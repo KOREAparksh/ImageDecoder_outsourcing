@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
                 break;
             case R.id.galleryButton:
+                intent = new Intent(MainActivity.this, GalleryActivity.class);
+                startActivity(intent);
                 break;
             case R.id.fileButon:
                 break;

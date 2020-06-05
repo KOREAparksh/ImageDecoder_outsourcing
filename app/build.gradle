@@ -2,11 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    buildToolsVersion '29.0.3'
 
     defaultConfig {
         applicationId "com.example.imagedecoder_outsourcing"
-        minSdkVersion 16
+        minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -32,6 +32,8 @@ dependencies {
 
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
     //이미지 크롭을 위한 라이브러리
+
     implementation 'gun0912.ted:tedpermission:2.2.3'
     //퍼미션 관리 라이브러리
+
 }

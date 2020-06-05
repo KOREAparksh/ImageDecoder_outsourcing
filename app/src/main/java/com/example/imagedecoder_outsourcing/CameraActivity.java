@@ -6,6 +6,7 @@ import androidx.core.content.FileProvider;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -15,11 +16,13 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -29,10 +32,10 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
 
     final static int REQUEST_TAKE_PHOTO = 1;
-    final static int CAMERA_REQ = 100;
+    final static String EDIT_CODE = "camera";
 
     private String mCurrentPhotoPath;
-    private CropImageView cropImage;
+    static CropImageView cropImage;
     private Button exit, edit, choose;
 
     @Override
@@ -146,6 +149,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         exit = (Button) findViewById(R.id.exit);
         choose = (Button) findViewById(R.id.choose);
         edit = (Button)findViewById(R.id.edit);
+
     }
 
     private void setListener() {
@@ -162,17 +166,15 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                 finish();
                 break;
             case R.id.choose: // 인식버튼
-                Intent intent_choose = new Intent();
 
-                /**
-                 * 인텐트로 사진 보내기
-                 */
-
-                setResult(RESULT_OK, intent_choose);
                 finish();
                 break;
-            case R.id.edit:
-
+            case R.id.edit: //편집버튼
+                Intent intent_choose = new Intent(CameraActivity.this, EditActivity.class);
+                intent_choose.putExtra(EditActivity.EDIT_CODE, EDIT_CODE);
+                startActivity(intent_choose);
+                finish();
+                break;
         }
     }
 }
