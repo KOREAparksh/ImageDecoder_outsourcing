@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".OpensourceActivity"
+    android:background="@android:color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:id="@+id/block_opensource"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/exit"
+                android:background="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="뒤로가기" />
+
+        </RelativeLayout>
+
+        <TextView
+            app:layout_constraintTop_toBottomOf="@+id/block_opensource"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Copyright 2017 Ted Park \n\n
+
+Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);\n
+you may not use this file except in compliance with the License.\n
+You may obtain a copy of the License at\n\n
+
+http://www.apache.org/licenses/LICENSE-2.0\n\n
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.\n\n\n
+
+Originally forked from edmodo/cropper.\n\n
+Copyright 2016, Arthur Teplitzki, 2013, Edmodo, Inc.\n
+
+Licensed under the Apache License,
+Version 2.0 (the &quot;License&quot;);\n\n
+you may not use this work except in compliance with the License.\n
+You may obtain a copy of the License in the LICENSE file, or at:\n\n
+
+http://www.apache.org/licenses/LICENSE-2.0\n\n
+
+Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+&quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ either express or implied. See the License for the specific language
+  governing permissions and limitations under the License." />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</ScrollView>

@@ -32,4 +32,6 @@ dependencies {
 
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
     //이미지 크롭을 위한 라이브러리
+    implementation 'gun0912.ted:tedpermission:2.2.3'
+    //퍼미션 관리 라이브러리
 }
