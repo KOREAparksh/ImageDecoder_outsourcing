@@ -92,6 +92,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode != RESULT_OK)  finish();
         try {
             switch (requestCode) {
                 case REQUEST_TAKE_PHOTO: {
@@ -129,6 +130,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                     }
                     break;
                 }
+                default:
             }
 
         } catch (Exception error) {
@@ -166,14 +168,12 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                 finish();
                 break;
             case R.id.choose: // 인식버튼
-
                 finish();
                 break;
             case R.id.edit: //편집버튼
                 Intent intent_choose = new Intent(CameraActivity.this, EditActivity.class);
                 intent_choose.putExtra(EditActivity.EDIT_CODE, EDIT_CODE);
                 startActivity(intent_choose);
-                finish();
                 break;
         }
     }

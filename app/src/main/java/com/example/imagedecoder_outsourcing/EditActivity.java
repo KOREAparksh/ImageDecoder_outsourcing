@@ -20,8 +20,10 @@ public class EditActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String str = intent.getExtras().getString(EDIT_CODE);
 
-
-
+        /**
+         * 갤러리에서 오면 str은 gallery, 카메라에서 오면 str은 camera로 나옵니다.
+         * 각 액티비티에서 이미지를 받아오시거나 링크 얻어와서 이미지 여시면 됩니다.
+         */
         imageView = (ImageView)findViewById(R.id.testImage);
 
     }

@@ -53,8 +53,7 @@ public class StartActivity extends AppCompatActivity {
                 .setPermissionListener(permissionlistener)
                 .setRationaleMessage("어플을 사용하기 위해선 권한이 필요합니다.") //퍼미션 내용.
                 .setDeniedMessage("권한요청을 누르시거나\n[설정] > [권한] 에서 권한을 허용할 수 있어요.") //퍼미션 거부시 내용
-                .setPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        , Manifest.permission.READ_EXTERNAL_STORAGE)
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
                 .check();
     }
 }
