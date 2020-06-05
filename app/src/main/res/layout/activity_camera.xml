@@ -21,6 +21,13 @@
 
             android:text="뒤로가기" />
         <Button
+            android:id="@+id/edit"
+            android:background="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/choose"
+            android:text="편집" />
+        <Button
             android:id="@+id/choose"
             android:background="@android:color/white"
             android:layout_width="wrap_content"

@@ -23,8 +23,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    final static int CAMERA_ACTIVITY_REQ = 10; //카메라 액티비티 요청코드
-
     private ImageButton cameraButton; //카메라버튼
     private ImageButton galleryButton; //갤러리버튼
     private ImageButton fileButton; //file 버튼
@@ -68,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
             case R.id.cameraButton:
                 intent = new Intent(MainActivity.this, CameraActivity.class);
-                startActivityForResult(intent, CAMERA_ACTIVITY_REQ);
+                startActivity(intent);
                 break;
             case R.id.galleryButton:
                 break;
@@ -78,22 +76,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent = new Intent(MainActivity.this, OpensourceActivity.class);
                 startActivity(intent);
                 break;
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CAMERA_ACTIVITY_REQ){
-            if(resultCode == RESULT_OK) {
-                Intent intent = getIntent();
-                Bitmap bitmap = data.getExtras().getParcelable("Image");
-                Log.d("CameraActivity_", "in main : " + bitmap);
-                test.setImageBitmap(bitmap);
-            }
-            else if(resultCode == RESULT_CANCELED){
-
-            }
         }
     }
 }
