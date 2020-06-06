@@ -168,12 +168,14 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                 finish();
                 break;
             case R.id.choose: // 인식버튼
+                Intent intent_choose = new Intent(CameraActivity.this, SocketActivity.class);
+                startActivity(intent_choose);
                 finish();
                 break;
             case R.id.edit: //편집버튼
-                Intent intent_choose = new Intent(CameraActivity.this, EditActivity.class);
-                intent_choose.putExtra(EditActivity.EDIT_CODE, EDIT_CODE);
-                startActivity(intent_choose);
+                Intent intent_edit = new Intent(CameraActivity.this, EditActivity.class);
+                intent_edit.putExtra(EditActivity.EDIT_CODE, EDIT_CODE);
+                startActivity(intent_edit);
                 break;
         }
     }
