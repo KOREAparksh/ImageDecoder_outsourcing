@@ -32,21 +32,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton cameraButton; //카메라버튼
     private ImageButton galleryButton; //갤러리버튼
     private ImageButton fileButton; //file 버튼
-    private TextView opensource;
+    private TextView opensource; // 오픈소스 버
 
-    ImageView test;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        test = (ImageView)findViewById(R.id.testImage);
-
         initView(); //뷰 초기화
         setListener(); //리스너 달기
-        checkExternalStorage();
-
+        checkExternalStorage(); //파일 열기 전 퍼미션 마지막으로 확인.
     }
 
     //리스너 달기
@@ -88,17 +84,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
-    private File getSaveFolder(){
-        File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/imageDecoderDownload");// 앱 지워도 남음, but download폴더 내에서
-        File dir2 = new File(Environment.getExternalStorageDirectory() + "/imageDecoderDownload");// 공개파일 but 앱 지우면 사라짐
 
-        if(!dir2.exists()){
-            dir2.mkdirs();
+    /**
+     * 아래 두 메소드(getSaveFolder, openFolder)는 기존에 주신 메소드 참고하였습니다. 바뀐것들 좀 있습니다.
+     */
+    private File getSaveFolder(){
+
+        File dir = new File(Environment.getExternalStorageDirectory() + "/imageDecoderDownload");// 공개파일
+
+        if(!dir.exists()){
+            dir.mkdirs();
             Toast.makeText(this,"폴더 생성 성공 : 휴대폰 내장메모리/imageDecoderDownload", Toast.LENGTH_SHORT).show();
         }else{
 
         }
-        return dir2;
+        return dir;
     }
 
     private void openFolder(){

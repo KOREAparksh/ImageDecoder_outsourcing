@@ -36,4 +36,5 @@ dependencies {
     implementation 'gun0912.ted:tedpermission:2.2.3'
     //퍼미션 관리 라이브러리
 
+
 }

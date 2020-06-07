@@ -2,6 +2,7 @@ package com.example.imagedecoder_outsourcing;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -26,18 +27,36 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+/**
+ * 편집액티비티, 소캣액티비티 코드들은 넘어갈때 자기가 카메라에서 왔는지 갤러리에서 왔는지 intent로 값을 가지고 갑니다.
+ *  위 액티비티들은 하나이니 카메라에서 넘어갈때, 갤러리에서 넘어갈 때를 잘 구분하셔서 코드를 작성하세요.
+ */
 
 public class SocketActivity extends AppCompatActivity {
+
+    final static String SOCKET_CODE = "socket";
 
     InputStream reciver;
     DataOutputStream os;
     Socket s;
     Handler handler;
 
+    Intent intent;
+    String pre_activity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_socket);
+
+        handler = new Handler();
+
+        //카메라, 갤러리 어디서 왔는지
+        intent = getIntent();
+        pre_activity = intent.getExtras().getString(SOCKET_CODE);
 
         new Thread() {
             @Override
@@ -66,7 +85,20 @@ public class SocketActivity extends AppCompatActivity {
         try {
             //이미지를 bitmap으로 불러옴
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            Bitmap img = CameraActivity.cropImage.getCroppedImage();
+
+            //이미지가 어디서 왔는지에 따라 각 액티비티에서 이미지 비트맵 가져오기
+            //이때 크롭되어 날라옴.
+            Bitmap img;
+            if(pre_activity.equals(CameraActivity.SOCKET_CODE) ) // 카메라에서 오면
+            {
+                img = CameraActivity.cropImage.getCroppedImage();
+                Log.d("test","camera Activity come in");
+            }
+            else //카메라가 아니라면
+            {
+                Log.d("test","gallery Activity come in");
+                img = GalleryActivity.imageView.getCroppedImage();
+            }
 
             img.compress(Bitmap.CompressFormat.PNG, 100, baos);
 
@@ -79,8 +111,6 @@ public class SocketActivity extends AppCompatActivity {
             String len = "" + base64.length();
             for (int i = 0; i < 16 - Math.log10(base64.length()); i++)
                 len += " ";
-
-            Log.d("Socket", "len : " + len);
 
             SendMessage(len);
             SendMessage(base64);
@@ -114,20 +144,38 @@ public class SocketActivity extends AppCompatActivity {
                     try {
                         //데이터 수신부
                         byte[] byteArr = new byte[10000];
+                        Log.d("test", "1");
                         int readByteCount = reciver.read(byteArr);
+                        Log.d("test", "12" + reciver.toString());
                         String data = new String(byteArr, 0, readByteCount, "UTF-8");
+                        Log.d("test", "13");
                         byte[] binary = Base64.decode(data, 0);
 
+                        Log.d("test", "14");
                         str += new String(binary);
+                        Log.d("test", "22222");
                     } catch (IOException e) {
-                        Log.d("asdf", "bbb");
+                        Log.d("test", "bbb5");
+                        Log.d("test", " error : " + e.getMessage());
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
+                                Log.d("test", "16");
                                 Toast.makeText(SocketActivity.this, "연결 종료됨", Toast.LENGTH_SHORT).show();
                             }
                         });
-                        WriteTextFile("/imageDecoderDownload", "Conversion complete.txt", str);
+                        Log.d("test", "17");
+
+                        //시간으로 파일명 생성
+                        long time = System.currentTimeMillis();  //시간 받기
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
+                        //포멧 변환  형식 만들기
+                        Date dd = new Date(time);  //받은 시간을 Date 형식으로 바꾸기
+                        String strTime = sdf.format(dd); //Data 정보를 포멧 변환하기
+
+                        String filename = "Result "+strTime+".txt";
+
+                        WriteTextFile("/imageDecoderDownload", filename, str);
                         e.printStackTrace();
                         return;
                     }
@@ -152,6 +200,11 @@ public class SocketActivity extends AppCompatActivity {
             writer.flush();
             writer.close();
             fos.close();
+
+            /**
+             *
+             */
+            finish(); // 추가한부분
             handler.post(new Runnable() {
                 @Override
                 public void run() {

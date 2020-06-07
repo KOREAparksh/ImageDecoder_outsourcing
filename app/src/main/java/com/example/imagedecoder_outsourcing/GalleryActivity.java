@@ -10,26 +10,45 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
+/**
+ * 편집액티비티, 소캣액티비티 코드들은 넘어갈때 자기가 카메라에서 왔는지 갤러리에서 왔는지 intent로 값을 가지고 갑니다.
+ * 위 액티비티들은 하나이니 카메라에서 넘어갈때, 갤러리에서 넘어갈 때를 잘 구분하셔서 코드를 작성하세요.
+ */
 
 public class GalleryActivity extends AppCompatActivity implements View.OnClickListener {
 
 
     final static String EDIT_CODE = "gallery";
+    final static String SOCKET_CODE = "gallery";
 
-    private Button exit, edit, choose;
-    private CropImageView imageView;
+    private Button exit, edit, choose, rotate;
+    static CropImageView imageView;
+
+    private Bitmap bitmap_temp = null; // 회전 시 회전 전의 bitmap 저장.
+    private int rotateBefore;
+
+    int x=0, y=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +57,10 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
 
         initView();
 
+
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         startActivityForResult(intent, 1);
-
     }
 
     @Override
@@ -56,29 +75,35 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
                     Bitmap img = BitmapFactory.decodeStream(in);
                     in.close();
 
+                    bitmap_temp = img;
+                    rotateBefore = 0;
                     imageView.setImageBitmap(img);
-            } catch(Exception e){
+                } catch (Exception e) {
 
+                }
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "사진 선택 취소", Toast.LENGTH_LONG).show();
+                finish();
             }
-        } else if (resultCode == RESULT_CANCELED) {
-            Toast.makeText(this, "사진 선택 취소", Toast.LENGTH_LONG).show();
-            finish();
         }
+
     }
 
-}
-
-    public static Bitmap rotateImage(Bitmap source, float angle) {
+    public Bitmap rotateImage(Bitmap source, float angle) {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+        Bitmap bitmap = Bitmap.createBitmap(source, x, y, source.getWidth(), source.getHeight(),
                 matrix, true);
+        x += source.getWidth()/angle;
+        y += source.getHeight()/angle;
+        return bitmap;
     }
 
     private void initView() {
         imageView = (CropImageView) findViewById(R.id.cropImageView_Gallery);
         exit = (Button) findViewById(R.id.exit);
         edit = (Button) findViewById(R.id.edit);
+        rotate = (Button) findViewById(R.id.rotate);
         choose = (Button) findViewById(R.id.choose);
 
         setListener();
@@ -88,6 +113,36 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
         edit.setOnClickListener(this);
         exit.setOnClickListener(this);
         choose.setOnClickListener(this);
+        rotate.setOnClickListener(this);
+    }
+
+    void saveCropImage(){
+
+        imageView.setDrawingCacheEnabled(true);
+        Bitmap bitmap = imageView.getCroppedImage();
+        //File file = new File("/DCIM/Camera/image.jpg");
+
+        //시간으로 파일명 생성
+        long time = System.currentTimeMillis();  //시간 받기
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
+        //포멧 변환  형식 만들기
+        Date dd = new Date(time);  //받은 시간을 Date 형식으로 바꾸기
+        String strTime = sdf.format(dd); //Data 정보를 포멧 변환하기
+
+        File root = Environment.getExternalStorageDirectory();
+        File cachePath = new File(root.getAbsolutePath() + "/DCIM/Camera/image"+strTime+".jpg");
+        try
+        {
+            cachePath.createNewFile();
+            FileOutputStream ostream = new FileOutputStream(cachePath);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+            ostream.close();
+            Toast.makeText(this, "이미지 저장 완료", Toast.LENGTH_SHORT).show();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -97,11 +152,19 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
                 finish();
                 break;
             case R.id.edit:
-                Intent intent_choose = new Intent(GalleryActivity.this, EditActivity.class);
-                intent_choose.putExtra(EditActivity.EDIT_CODE, EDIT_CODE);
-                startActivity(intent_choose);
+                Intent intent_edit = new Intent(GalleryActivity.this, EditActivity.class);
+                intent_edit.putExtra(EditActivity.EDIT_CODE, EDIT_CODE);
+
+                startActivity(intent_edit);
+                break;
+            case R.id.rotate:
+                imageView.rotateImage(90);
                 break;
             case R.id.choose:
+                saveCropImage();
+                Intent intent_choose = new Intent(GalleryActivity.this, EditActivity.class);
+                intent_choose.putExtra(SocketActivity.SOCKET_CODE, SOCKET_CODE);
+                startActivity(intent_choose);
                 finish();
                 break;
         }

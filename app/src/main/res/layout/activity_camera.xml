@@ -21,6 +21,13 @@
 
             android:text="뒤로가기" />
         <Button
+            android:id="@+id/rotate"
+            android:background="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/edit"
+            android:text="회전" />
+        <Button
             android:id="@+id/edit"
             android:background="@android:color/white"
             android:layout_width="wrap_content"
