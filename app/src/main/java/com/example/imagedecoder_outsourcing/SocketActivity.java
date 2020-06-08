@@ -174,7 +174,7 @@ public class SocketActivity extends AppCompatActivity {
                         String strTime = sdf.format(dd); //Data 정보를 포멧 변환하기
 
                         String filename = "Result "+strTime+".txt";
-
+                        Log.d("test_", str);
                         WriteTextFile("/imageDecoderDownload", filename, str);
                         e.printStackTrace();
                         return;

@@ -16,6 +16,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -42,7 +43,10 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
     private String mCurrentPhotoPath;
     static CropImageView cropImage;
-    private Button exit, edit, choose, rotate;
+    private Button exit, edit, choose;
+    private ImageButton rotateLeft, rotateRight;
+    private Bitmap bitmap_temp = null; // 회전 시 회전 전의 bitmap 저장.
+    int rotateDegree=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +135,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                                     rotatedBitmap = bitmap;
                             }
 
+                            bitmap_temp = rotatedBitmap;// 회전 시 기존 위치를 알기위해
                             cropImage.setImageBitmap(rotatedBitmap);
                         }
                     }
@@ -144,9 +149,17 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    public static Bitmap rotateImage(Bitmap source, float angle) {
+    void setRotateDegree(int angle)
+    {
+        rotateDegree = angle;
+        if(rotateDegree >= 360) rotateDegree =0;
+        else if (rotateDegree <= -360) rotateDegree=0;
+    }
+
+    public Bitmap rotateImage(Bitmap source, int angle) {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
+        setRotateDegree(angle);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
                 matrix, true);
     }
@@ -158,7 +171,8 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         exit = (Button) findViewById(R.id.exit);
         choose = (Button) findViewById(R.id.choose);
         edit = (Button)findViewById(R.id.edit);
-        rotate = (Button)findViewById(R.id.rotate);
+        rotateLeft = (ImageButton) findViewById(R.id.rotateLeft);
+        rotateRight = (ImageButton) findViewById(R.id.rotateRight);
 
     }
 
@@ -166,7 +180,8 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         exit.setOnClickListener(this);
         choose.setOnClickListener(this);
         edit.setOnClickListener(this);
-        rotate.setOnClickListener(this);
+        rotateLeft.setOnClickListener(this);
+        rotateRight.setOnClickListener(this);
     }
 
     void saveCropImage(){
@@ -205,8 +220,12 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.exit:
                 finish();
                 break;
-            case R.id.rotate:
-                cropImage.rotateImage(90);
+            case R.id.rotateLeft:
+                //imageView.rotateImage(90);
+                cropImage.setImageBitmap(rotateImage(bitmap_temp, rotateDegree - 10));
+                break;
+            case  R.id.rotateRight:
+                cropImage.setImageBitmap(rotateImage(bitmap_temp, rotateDegree + 10));
                 break;
             case R.id.edit: //편집버튼
                 Intent intent_edit = new Intent(CameraActivity.this, EditActivity.class);

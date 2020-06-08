@@ -17,28 +17,35 @@
             android:id="@+id/exit"
             android:background="@android:color/white"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
 
             android:text="뒤로가기" />
-        <Button
-            android:id="@+id/rotate"
+        <ImageButton
+            android:id="@+id/rotateLeft"
             android:background="@android:color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_toLeftOf="@id/rotateRight"
+            android:src="@drawable/ic_baseline_rotate_left_24"/>
+        <ImageButton
+            android:id="@+id/rotateRight"
+            android:background="@android:color/white"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_toLeftOf="@id/edit"
-            android:text="회전" />
+            android:src="@drawable/ic_baseline_rotate_right_24" />
         <Button
             android:id="@+id/edit"
             android:background="@android:color/white"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_toLeftOf="@id/choose"
             android:text="편집" />
         <Button
             android:id="@+id/choose"
             android:background="@android:color/white"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_alignParentRight="true"
             android:text="인식" />
 

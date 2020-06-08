@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -42,13 +43,12 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
     final static String EDIT_CODE = "gallery";
     final static String SOCKET_CODE = "gallery";
 
-    private Button exit, edit, choose, rotate;
+    private Button exit, edit, choose;
+    private ImageButton rotateLeft, rotateRight;
     static CropImageView imageView;
 
     private Bitmap bitmap_temp = null; // 회전 시 회전 전의 bitmap 저장.
-    private int rotateBefore;
-
-    int x=0, y=0;
+    int rotateDegree=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +75,7 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
                     Bitmap img = BitmapFactory.decodeStream(in);
                     in.close();
 
-                    bitmap_temp = img;
-                    rotateBefore = 0;
+                    bitmap_temp = img;// 회전 시 기존 위치를 알기위해
                     imageView.setImageBitmap(img);
                 } catch (Exception e) {
 
@@ -89,21 +88,27 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
-    public Bitmap rotateImage(Bitmap source, float angle) {
+    void setRotateDegree(int angle)
+    {
+        rotateDegree = angle;
+        if(rotateDegree >= 360) rotateDegree =0;
+        else if (rotateDegree <= -360) rotateDegree=0;
+    }
+
+    public Bitmap rotateImage(Bitmap source, int angle) {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
-        Bitmap bitmap = Bitmap.createBitmap(source, x, y, source.getWidth(), source.getHeight(),
+        setRotateDegree(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
                 matrix, true);
-        x += source.getWidth()/angle;
-        y += source.getHeight()/angle;
-        return bitmap;
     }
 
     private void initView() {
         imageView = (CropImageView) findViewById(R.id.cropImageView_Gallery);
         exit = (Button) findViewById(R.id.exit);
         edit = (Button) findViewById(R.id.edit);
-        rotate = (Button) findViewById(R.id.rotate);
+        rotateLeft = (ImageButton) findViewById(R.id.rotateLeft);
+        rotateRight = (ImageButton) findViewById(R.id.rotateRight);
         choose = (Button) findViewById(R.id.choose);
 
         setListener();
@@ -113,7 +118,8 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
         edit.setOnClickListener(this);
         exit.setOnClickListener(this);
         choose.setOnClickListener(this);
-        rotate.setOnClickListener(this);
+        rotateLeft.setOnClickListener(this);
+        rotateRight.setOnClickListener(this);
     }
 
     void saveCropImage(){
@@ -157,12 +163,16 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
 
                 startActivity(intent_edit);
                 break;
-            case R.id.rotate:
-                imageView.rotateImage(90);
+            case R.id.rotateLeft:
+                //imageView.rotateImage(90);
+                imageView.setImageBitmap(rotateImage(bitmap_temp, rotateDegree - 10));
+                break;
+            case  R.id.rotateRight:
+                imageView.setImageBitmap(rotateImage(bitmap_temp, rotateDegree + 10));
                 break;
             case R.id.choose:
                 saveCropImage();
-                Intent intent_choose = new Intent(GalleryActivity.this, EditActivity.class);
+                Intent intent_choose = new Intent(GalleryActivity.this, SocketActivity.class);
                 intent_choose.putExtra(SocketActivity.SOCKET_CODE, SOCKET_CODE);
                 startActivity(intent_choose);
                 finish();
